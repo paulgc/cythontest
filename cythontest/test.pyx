@@ -9,8 +9,11 @@ cdef extern from "string.h" nogil:
     char *strtok_r (char *inp_str, const char *delimiters, char **)  
 
 cdef void convert_to_vector(string_col, vector[string]& string_vector, StringVector& tmp):        
-    for val in string_col:                                                      
-        string_vector.push_back(str(val)) 
+    for val in string_col:
+        if isinstance(val, bytes):                                                      
+            string_vector.push_back(val) 
+        else:
+            string_vector.push_back(val.encode('utf-8'))
 
 cdef vector[string] tokenize(const string& inp_string) nogil:         
     cdef char* pch
@@ -26,7 +29,10 @@ cdef vector[string] tokenize(const string& inp_string) nogil:
     return out_tokens    
 
 def foo1(s):
-    print tokenize(str(s))
+    if isinstance(s, bytes):                                              
+        print(tokenize(s))                                                           
+    else:                                                                   
+        print(tokenize(s.encode('utf-8')))
 
 def foo(df, col_name):
     cdef StringVector sv
@@ -38,9 +44,10 @@ def foo(df, col_name):
 
     for j in xrange(n):
         tokens.push_back(vector[string]())
+
     for j in prange(n, nogil=True, num_threads=4):                    
         tokens[j] = tokenize(sv.str_vec[j])
     
-    print tokens[0]
+    print(tokens[0])
 ####
 
