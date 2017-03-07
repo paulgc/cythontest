@@ -6,20 +6,21 @@ from cython.parallel import prange
 from libcpp.set cimport set as oset                                             
 
 cdef extern from "string.h" nogil:                                              
-    char *strtok (char *inp_str, const char *delimiters)  
+    char *strtok_r (char *inp_str, const char *delimiters, char **)  
 
 cdef void convert_to_vector(string_col, vector[string]& string_vector, StringVector& tmp):        
     for val in string_col:                                                      
         string_vector.push_back(str(val)) 
 
 cdef vector[string] tokenize(const string& inp_string) nogil:         
-    cdef char* pch                                                          
-    pch = strtok (<char*> inp_string.c_str(), " ")                          
+    cdef char* pch
+    cdef char* ptr1
+    pch = strtok_r (<char*> inp_string.c_str(), " ", &ptr1)                          
     cdef oset[string] tokens                                                
     cdef vector[string] out_tokens                                          
     while pch != NULL:                                                  
         tokens.insert(string(pch))                                      
-        pch = strtok (NULL, " ")                                        
+        pch = strtok_r (NULL, " ", &ptr1)                                        
     for s in tokens:                                                    
         out_tokens.push_back(s)                                         
     return out_tokens    
