@@ -1,40 +1,40 @@
 matrix:
   include:
-  - os: linux
-    python: 2.7
-    env: PYTHON_VERSION=2.7
-  - os: linux
-    python: 3.3
-    env: PYTHON_VERSION=3.3
-  - os: linux
-    python: 3.4
-    env: PYTHON_VERSION=3.4
-  - os: linux
-    python: 3.5
-    env: PYTHON_VERSION=3.5
-  - os: linux                                                                   
-    python: 3.6                                                                 
-    env: PYTHON_VERSION=3.6       
+#  - os: linux
+#    python: 2.7
+#    env: PYTHON_VERSION=2.7
+#  - os: linux
+#    python: 3.3
+#    env: PYTHON_VERSION=3.3
+#  - os: linux
+#    python: 3.4
+#    env: PYTHON_VERSION=3.4
+#  - os: linux
+#    python: 3.5
+#    env: PYTHON_VERSION=3.5
+#  - os: linux                                                                   
+#    python: 3.6                                                                 
+#    env: PYTHON_VERSION=3.6       
   - os: osx
     language: generic
     env:
     - PYTHON_VERSION=2.7
-  - os: osx
-    language: generic
-    env:
-    - PYTHON_VERSION=3.3
-  - os: osx
-    language: generic
-    env:
-    - PYTHON_VERSION=3.4
-  - os: osx
-    language: generic
-    env:
-    - PYTHON_VERSION=3.5
-  - os: osx                                                                     
-    language: generic                                                           
-    env:                                                                        
-    - PYTHON_VERSION=3.6  
+#  - os: osx
+#    language: generic
+#    env:
+#    - PYTHON_VERSION=3.3
+#  - os: osx
+#    language: generic
+#    env:
+#    - PYTHON_VERSION=3.4
+#  - os: osx
+#    language: generic
+#    env:
+#    - PYTHON_VERSION=3.5
+#  - os: osx                                                                     
+#    language: generic                                                           
+#    env:                                                                        
+#    - PYTHON_VERSION=3.6  
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O miniconda.sh; fi
@@ -45,11 +45,13 @@ before_install:
   - export PATH="$HOME/miniconda/bin:$PATH"
   - echo $PATH
   - which gcc
+  - gcc --version
 
 install:
   - conda install --yes python=$PYTHON_VERSION pandas Cython
   - python --version
-  - python setup.py build_ext --inplace
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then python setup.py build_ext --inplace; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then CC=/usr/local/bin/g++ CXX=/usr/local/bin/g++ python setup.py build_ext --inplace; fi
 
 script:
   - python test_script.py
