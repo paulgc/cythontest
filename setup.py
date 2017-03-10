@@ -60,8 +60,8 @@ if __name__ == "__main__":
         generate_cython()
 
     # specify extensions that need to be compiled
-    extensions = [setuptools.Extension("cythontest.test", sources=["cythontest/test.pyx", "cythontest/string_vector.cpp"], language="c++",
-                                       extra_compile_args = ["-O3", "-ffast-math", "-march=native", "-fopenmp"],
+    extensions = [setuptools.Extension("cythontest.f1.test", sources=["cythontest/f1/test.pyx", "cythontest/f2/string_vector.cpp"], language="c++",
+                                       extra_compile_args = ["-I./cythontest/f2/", "-O3", "-ffast-math", "-march=native", "-fopenmp"],
                                        extra_link_args=['-fopenmp']),]
  
     # find packages to be included. exclude benchmarks.
