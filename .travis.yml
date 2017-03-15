@@ -35,8 +35,8 @@ matrix:
 #    language: generic                                                           
 #    env:                                                                        
 #    - PYTHON_VERSION=3.6  
-compiler:
-  - gcc
+#compiler:
+#  - gcc
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then wget http://repo.continuum.io/miniconda/Miniconda2-4.0.5-Linux-x86_64.sh -O miniconda.sh; fi
@@ -50,7 +50,8 @@ before_install:
   - gcc --version
 
 install:
-  - conda install --yes python=$PYTHON_VERSION pandas Cython
+  - conda install --yes python=$PYTHON_VERSION pandas Cython gcc
+  - which gcc
   - python --version
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then python setup.py build_ext --inplace; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python setup.py build_ext --inplace; fi
